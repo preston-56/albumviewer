@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import PhotoItem from "@/photo/PhotoItem";
 import Loader from "@/components/Loader";
 import { PhotoResponse } from "@/api/interface";
+import Navbar from "@/components/Navbar";
 
 const PhotoGallery: React.FC = () => {
   const [photos, setPhotos] = useState<PhotoResponse[]>([]);
@@ -31,18 +32,30 @@ const PhotoGallery: React.FC = () => {
     fetchPhotos();
   }, []);
 
+  const links = [
+    { name: "Home", path: "/" },
+    { name: "Albums", path: "/albums" },
+    { name: "About", path: "/about" },
+  ];
+
   if (loading) {
     return <Loader />;
   }
   if (error) return <div>Error: {error}</div>;
+  if (photos.length === 0) {
+    return <div>No photos available.</div>;
+  }
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Photo Gallery</h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        {photos.map((photo) => (
-          <PhotoItem key={photo.id} photo={photo} />
-        ))}
+      <Navbar title="Photo Gallery" links={links} />
+      <div className="container mx-auto mt-4">
+        <h1 className="text-2xl font-bold mb-4">Photo Gallery</h1>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {photos.map((photo) => (
+            <PhotoItem key={photo.id} photo={photo} />
+          ))}
+        </div>
       </div>
     </div>
   );
